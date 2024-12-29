@@ -1,0 +1,198 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Pizza_Store.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - Pizza Store</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-image: url('/img/bg_4.jpg')
+        }
+
+        .contact-icon {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form runat="server">
+        <asp:ScriptManager runat="server">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+
+
+        <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" runat="server" href="~/">Pizza Store</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarColor01">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" runat="server" href="~/">Home</a>
+                        </li>
+
+                        <% if (Context.User.Identity.GetUserName() != "") { %>
+                        <% if (Context.User.IsInRole("Admin")) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" runat="server" href="~/admin/AddProducts">Add Pizza</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" runat="server" href="~/admin/ListProducts">List Pizza</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" runat="server" href="~/admin/AddPizzaSize.aspx">Add Size</a>
+                        </li>
+                        <% }
+                        else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" runat="server" href="~/Cart">Cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" runat="server" href="~/Orders">Order</a>
+                        </li>
+                        <% } %>
+                        <% } %>
+                    </ul>
+
+                    <asp:LoginView runat="server" ViewStateMode="Disabled">
+                        <AnonymousTemplate>
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" runat="server" href="~/Account/Register">Register</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" runat="server" href="~/Account/Login">Log in</a>
+                                </li>
+                            </ul>
+                        </AnonymousTemplate>
+
+                        <LoggedInTemplate>
+                            <ul class="navbar-nav ms-auto">
+                                <% if (Context.User.Identity.GetUserName() != "" && !Context.User.IsInRole("Admin"))
+                                    { %>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<%= ResolveUrl("~/Cart.aspx") %>">
+                                        <i class="fa-solid fa-cart-shopping p-2"></i>
+                                        <span class="badge badge-danger px-2 py-1 rounded-pill"><%= GetCartItemCount() %></span>
+                                    </a>
+                                </li>
+                                <% } %>
+                                <li class="nav-item">
+                                    <a class="nav-link" runat="server" href="~/Account/Manage" title="Manage your account">Account</a>
+                                </li>
+                                <li class="nav-item">
+                                    <asp:LoginStatus class="nav-link" runat="server" LogoutAction="Redirect" LogoutText="Log Out" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+                                </li>
+                            </ul>
+                        </LoggedInTemplate>
+                    </asp:LoginView>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container body-content">
+            <div  class="min-vh-100">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder></div>
+            <hr />
+            <footer class="footer mt-4">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <h5 class="footer-heading">Pizza Paradise</h5>
+                            <p>Serving the best pizzas since 1990. Made with love and the finest ingredients.</p>
+                            <div class="social-icons mt-3">
+                                <a href="#" class="footer-link"><i class="fab fa-facebook"></i></a>
+                                <a href="#" class="footer-link"><i class="fab fa-twitter mx-2"></i></a>
+                                <a href="#" class="footer-link"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-4">
+                            <h5 class="footer-heading">Quick Links</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="~/" class="footer-link">Home</a></li>
+                                <li><a href="~/" class="footer-link">Menu</a></li>
+                                <li><a href="~/" class="footer-link">Special Offers</a></li>
+                                <li><a href="~/About" class="footer-link">About Us</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-3 mb-4">
+                            <h5 class="footer-heading">Customer Service</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="~/" class="footer-link">Contact Us</a></li>
+                                <li><a href="~/" class="footer-link">FAQ</a></li>
+                                <li><a href="~/" class="footer-link">Privacy Policy</a></li>
+                                <li><a href="~/" class="footer-link">Terms & Conditions</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <h5 class="footer-heading">Contact Info</h5>
+                            <ul class="list-unstyled">
+                                <li class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-map-marker-alt contact-icon"></i>123 Pizza Street, Food City
+                                </li>
+                                <li class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-phone contact-icon"></i>(555) 123-4567
+                                </li>
+                                <li class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-envelope contact-icon"></i>info@pizzaparadise.com
+                                </li>
+                                <li class="d-flex align-items-center">
+                                    <i class="fas fa-clock contact-icon"></i>Open daily: 11am - 11pm
+                                </li>
+                            </ul>
+                        </div>
+
+
+
+
+                    </div>
+
+                    <hr class="mt-4 mb-4" style="border-color: rgba(255,255,255,0.1);" />
+
+                    <div class="row">
+                        <div class="col-md-6 text-center text-md-start">
+                            <p class="mb-0">&copy; <%: DateTime.Now.Year %> Pizza Paradise. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-center text-md-end">
+                            <img src="~/img/payment-methods.png" alt="Payment Methods" height="30" />
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </form>
+</body>
+</html>
