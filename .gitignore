@@ -359,3 +359,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Pizza Store/Account/Login.aspx
+/Pizza Store/App_Data/aspnet-Pizza Store-20230405114228.mdf
+/Pizza Store/App_Data/aspnet-Pizza Store-20230405114228_log.ldf
